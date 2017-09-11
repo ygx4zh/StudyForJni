@@ -217,3 +217,57 @@ jdoubleArray Java_com_example_jni_Test_getDoubles(JNIEnv* env,jobject obj,jint s
 {
     return (*env)->NewDoubleArray(env,size);
 }
+
+jobjectArray Java_com_example_jni_Test_getIntArrays(JNIEnv* env,jobject obj,jint size)
+{
+    /*
+    // PS: 注意: (*env)->FindClass(env,"[I");是linux下c语言的调用方式
+    // env->FindClass("[I");是c++的调用方式; 如果要使用c++的调用方式, 把文件改为.cpp即可
+    jclass intArrClass = env->FindClass("[I");
+    //jobjectArray NewObjectArray(jsize length, jclass elementClass,jobject initialElement)
+    // 创建一个int的二维数组
+    jobjectArray intObjectArr = env->NewObjectArray(size,intArrClass,NULL);
+
+    for(int i = 0;i < size;i++)
+    {
+        jintArray intArray = env->NewIntArray(size);
+
+        jint temp[size];
+        for(int j = 0;j < size;j++)
+        {
+            temp[j] = i * 10 + j;
+        }
+        // SetIntArrayRegion(jintArray array, jsize start, jsize len,const jint* buf)
+        env->SetIntArrayRegion(intArray,0,size,temp);
+
+        env->SetObjectArrayElement(intObjectArr,i,intArray);
+
+        env->DeleteLocalRef(intArray);
+    }
+    return intObjectArr;
+    */
+
+    jclass intArrClass = (*env)->FindClass(env,"[I");
+        //jobjectArray NewObjectArray(jsize length, jclass elementClass,jobject initialElement)
+        // 创建一个int的二维数组
+        jobjectArray intObjectArr = (*env)->NewObjectArray(env,size,intArrClass,NULL);
+
+        for(int i = 0;i < size;i++)
+        {
+            jintArray intArray = (*env)->NewIntArray(env,size);
+
+            jint temp[size];
+            for(int j = 0;j < size;j++)
+            {
+                temp[j] = i * 10 + j;
+            }
+            // SetIntArrayRegion(jintArray array, jsize start, jsize len,const jint* buf)
+            (*env)->SetIntArrayRegion(env,intArray,0,size,temp);
+
+            (*env)->SetObjectArrayElement(env,intObjectArr,i,intArray);
+
+            (*env)->DeleteLocalRef(env,intArray);
+        }
+        return intObjectArr;
+
+}

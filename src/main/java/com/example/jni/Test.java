@@ -25,6 +25,7 @@ public class Test {
     public static native float[] getFloats(int size);
     public static native double[] getDoubles(int size);
 
+    public static native int[][] getIntArrays(int size);
 
     public static native String sayHello();
     public static native String[] getLink();

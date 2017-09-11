@@ -2,6 +2,8 @@ package com.example.myjni;
 
 import org.junit.Test;
 
+import java.lang.reflect.Type;
+
 import static org.junit.Assert.*;
 
 /**
@@ -13,5 +15,12 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
+    }
+
+    @Test
+    public void test_getType() throws Exception{
+        //int[] arr = new int[10];
+        Type t = String[].class;
+        System.out.println(t.toString());
     }
 }

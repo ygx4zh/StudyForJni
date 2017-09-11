@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     int i = 999;
     boolean flag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
                 .append("getBoolean: ").append(Test.getBoolean(flag = !flag)).append(", \n")
                 .append("getInt: ").append(Test.getInt(i)).append(", \n")
                 .append("getByte: ").append(Test.getByte(200)).append(", \n")
-                .append("getChar: ").append(Test.getChar((char)98)).append(", \n")
+                .append("getChar: ").append(Test.getChar((char) 98)).append(", \n")
                 .append("getShort: ").append(Test.getShort()).append(", \n")
                 .append("getDouble: ").append(Test.getDouble()).append(", \n")
                 .append("getFloat: ").append(Test.getFloat()).append(", \n")
@@ -44,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
                 .append("getFloats: ").append(Arrays.toString(Test.getFloats(10))).append(", \n")
                 .append("getDoubles: ").append(Arrays.toString(Test.getDoubles(10))).append(", \n");
 //        Toast.makeText(this, sBuf.toString(), Toast.LENGTH_SHORT).show();
-        Log.e(TAG,"callNative: "+sBuf.toString());
+        Log.e(TAG, "callNative: " + sBuf.toString());
+
+        int[][] intArrays = Test.getIntArrays(10);
+        for (int i = 0; i < intArrays.length; i++) {
+            int[] intArray = intArrays[i];
+            for (int j = 0; j < intArray.length; j++) {
+                System.out.print(intArray[j]+" ");
+            }
+            System.out.println();
+        }
     }
 }
