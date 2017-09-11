@@ -20,7 +20,7 @@ ndk开发环境, 是android studio编写,编译,运行,调试c/c++代码的一�
     ndk编译也需要配置到环境变量;
     ```
     NDK_HOME:E:\develop\AS\sdk\sdk25\sdk\ndk-bundle
-    Path: %NDK_HOME%/bin;
+    Path: %NDK_HOME%;
     ```
 
 #### Hello NDK
