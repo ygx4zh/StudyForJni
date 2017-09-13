@@ -269,5 +269,33 @@ jobjectArray Java_com_example_jni_Test_getIntArrays(JNIEnv* env,jobject obj,jint
             (*env)->DeleteLocalRef(env,intArray);
         }
         return intObjectArr;
+}
 
+// native调用Java层函数
+// can't call void com.example.jni.Test.callByNative(java.lang.String) on instance of java.lang.Class<com.example.jni.Test>
+// 必须静态方法回调到静态方法, 非静态回调到非静态, 上面这个报错是因为程序里的静态方法回调到了非静态方法
+void Java_com_example_jni_Test_callNative(JNIEnv* env,jobject obj)
+{
+    // void        (*CallVoidMethod)(JNIEnv*, jobject, jmethodID, ...)
+    jstring jstr = (*env)->NewStringUTF(env,"string from native");
+
+    // jclass      (*GetObjectClass)(JNIEnv*, jobject);
+    // jclass mjclazz = (*env)->GetObjectClass(obj);    // 这里的obj其实指向的是调用者,
+                                                        // 刚好调用者也是native要调用的方法所在的类
+    // jclass      (*FindClass)(JNIEnv*, const char*);
+    jclass mjclazz = (*env)->FindClass(env,"com/example/jni/Test");
+    // jmethodID   (*GetMethodID)(JNIEnv*, jclass, const char*, const char*);
+    jmethodID callByNativeId = (*env)->GetMethodID(env,mjclazz,"callByNative","(Ljava/lang/String;)V");
+
+    // 这里要使用obj, 因此Java层对应的native不能为静态方法
+    // ...是参数
+    (*env)->CallVoidMethod(env,obj,callByNativeId,jstr);
+}
+
+// isNull为静态方法的时候, 测试obj是否为NULL
+jboolean Java_com_example_jni_Test_isNull(JNIEnv* env,jobject obj)
+{
+    // false
+    if(obj == NULL) return JNI_TRUE;
+    else return JNI_FALSE;
 }

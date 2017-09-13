@@ -1,8 +1,10 @@
 package com.example.jni;
 
 
+import android.util.Log;
 
 public class Test {
+    private static final String TAG = "Test";
     static
     {
         System.loadLibrary("hello_jni");
@@ -31,4 +33,10 @@ public class Test {
     public static native String[] getLink();
     public static native NetInfo getNetInfo();
 
+    public native void callNative();
+    public void callByNative(String msg){
+        Log.e(TAG, "callByNative: "+msg);
+    }
+
+    public static native boolean isNull();
 }

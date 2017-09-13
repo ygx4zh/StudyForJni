@@ -1,5 +1,6 @@
 package com.example.myjni;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +15,15 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     int i = 999;
     boolean flag = false;
+    private static Context sCtx;
+    private Test test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sCtx = getApplicationContext();
+        test = new Test();
     }
 
     public void callNative(View view) {
@@ -51,9 +56,18 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < intArrays.length; i++) {
             int[] intArray = intArrays[i];
             for (int j = 0; j < intArray.length; j++) {
-                System.out.print(intArray[j]+" ");
+                System.out.print(intArray[j] + " ");
             }
             System.out.println();
         }
+
+        test.callNative();
+        // Test.callNative();
+        boolean aNull = Test.isNull();
+        Log.e(TAG, "callNative: "+aNull);
+    }
+
+    public static void showToast(String msg, int count) {
+        Toast.makeText(sCtx, msg + " " + count, Toast.LENGTH_SHORT).show();
     }
 }
