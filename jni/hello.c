@@ -354,7 +354,7 @@ void Java_com_example_jni_Test_callbackByNative(JNIEnv* env,jobject obj,jobject 
     (*env)->CallVoidMethod(env,obj,callbackMethodID,name);  // 这里的jnit age不能当成jobject传, 程序会崩溃的, 而且看不到是哪里错
 }
 
-
+// 函数必须定义在调用者的前面
 jobject createPerson(JNIEnv* env,jstring name,jint age)
 {
     jclass personClazz = (*env)->FindClass(env,"com/example/bean/Person");
