@@ -3,6 +3,10 @@ package com.example.jni;
 
 import android.util.Log;
 
+import com.example.bean.Person;
+
+import java.util.ArrayList;
+
 public class Test {
     private static final String TAG = "Test";
     static
@@ -34,9 +38,20 @@ public class Test {
     public static native NetInfo getNetInfo();
 
     public native void callNative();
+
+    /**
+     * 在JNI层被 {@see #callNative}和 {@see #callbackByNative}函数回调
+     * @param msg
+     */
     public void callByNative(String msg){
         Log.e(TAG, "callByNative: "+msg);
     }
 
     public static native boolean isNull();
+
+    public static native Person birth();
+
+    public native void callbackByNative(Person p);
+
+    public static native ArrayList<Person> getListStudent();
 }

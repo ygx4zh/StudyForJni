@@ -7,8 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.bean.Person;
 import com.example.jni.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
@@ -69,5 +71,16 @@ public class MainActivity extends AppCompatActivity {
 
     public static void showToast(String msg, int count) {
         Toast.makeText(sCtx, msg + " " + count, Toast.LENGTH_SHORT).show();
+
+    }
+
+    public void callNative2(View view) {
+        Person birth = Test.birth();
+        Log.e(TAG, "callNative2: "+birth.toString());
+        test.callbackByNative(new Person("ddd",12));
+
+        for (Person person : Test.getListStudent()) {
+            Log.e(TAG, "callNative2: "+person.toString());
+        }
     }
 }

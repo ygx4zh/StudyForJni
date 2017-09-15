@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<jni.h>
 #include <sys/time.h>	// struct timeval 和gettimeofday函数的头文件
+#include <string.h>     // 处理字符串相关, http://www.cnblogs.com/52php/p/5724382.html
 
 // jstring Java_com_example_data_MainActivity_getIp(JNIEnv* env,jobject jobj)
 //   {
@@ -298,4 +299,87 @@ jboolean Java_com_example_jni_Test_isNull(JNIEnv* env,jobject obj)
     // false
     if(obj == NULL) return JNI_TRUE;
     else return JNI_FALSE;
+}
+
+// 返回一个Person对象
+jobject Java_com_example_jni_Test_birth(JNIEnv* env,jobject obj)
+{
+
+
+    // jclass      (*FindClass)(JNIEnv*, const char*);
+    jclass jPersonClazz = (*env)->FindClass(env,"com/example/bean/Person");
+
+    // 第四个参数是descriptor, 方法签名;, 可以在字节码的包名目录下, 执行javap -s com.example.bean.Person
+    // 构造方法的方法名默认为"<init>"
+    // methodID   (*GetMethodID)(JNIEnv*, jclass, const char*, const char*);
+    jmethodID jPersonConstructMethodID = (*env)->GetMethodID(env,jPersonClazz,"<init>","(Ljava/lang/String;I)V");
+
+    jstring name = (*env)->NewStringUTF(env,"袁光芯");
+    jint age = 25;
+    // 创建对象
+    // jobject     (*NewObject)(JNIEnv*, jclass, jmethodID, ...);
+    return (*env)->NewObject(env,jPersonClazz,jPersonConstructMethodID,name,age);
+}
+
+void Java_com_example_jni_Test_callbackByNative(JNIEnv* env,jobject obj,jobject p)
+{
+
+    // ------------------------------------------------------------------------- //
+    jclass jpersonClazz = (*env)->GetObjectClass(env,p);
+    // 第一步, 将对象解析拼接成字符串
+    // jfieldID    (*GetFieldID)(JNIEnv*, jclass, const char*, const char*);
+    jfieldID ageFieldID = (*env)->GetFieldID(env,jpersonClazz,"age","I");
+    jfieldID nameFieldID = (*env)->GetFieldID(env,jpersonClazz,"name","Ljava/lang/String;");
+    // jint       (*GetIntField)(JNIEnv*, jobject, jfieldID);
+    jint age = (*env)->GetIntField(env,p,ageFieldID);
+    jstring name = (*env)->GetObjectField(env,p,nameFieldID);
+
+    // const jchar* (*GetStringChars)(JNIEnv*, jstring, jboolean*);
+    // const char* buf = (*env)->GetStringUTFChars(env,name,NULL);
+
+    // sprintf(s, "%s love %s.", who, whom); //产生："I love CSDN. "
+    // sprintf(buf," %d",age);
+    // jstring toString = (*env)->NewStringUTF(env,buf);
+    // void        (*ReleaseStringUTFChars)(JNIEnv*, jstring, const char*);
+    // (*env)->ReleaseStringUTFChars(env,toString,buf);
+    // ------------------------------------------------------------------------- //
+
+
+    // jmethodID   (*GetMethodID)(JNIEnv*, jclass, const char*, const char*);
+    jclass jtestClazz = (*env)->FindClass(env,"com/example/jni/Test");
+    jmethodID callbackMethodID = (*env)->GetMethodID(env,jtestClazz,"callByNative","(Ljava/lang/String;)V");
+
+    jstring str = (*env)->NewStringUTF(env,"hahaha, ");
+    // void        (*CallVoidMethod)(JNIEnv*, jobject, jmethodID, ...);
+    (*env)->CallVoidMethod(env,obj,callbackMethodID,name);  // 这里的jnit age不能当成jobject传, 程序会崩溃的, 而且看不到是哪里错
+}
+
+
+jobject createPerson(JNIEnv* env,jstring name,jint age)
+{
+    jclass personClazz = (*env)->FindClass(env,"com/example/bean/Person");
+    jmethodID jpersonCon = (*env)->GetMethodID(env,personClazz,"<init>","(Ljava/lang/String;I)V");
+    // jobject     (*NewObject)(JNIEnv*, jclass, jmethodID, ...);
+    return (*env)->NewObject(env,personClazz,jpersonCon,name,age);
+}
+
+jobject Java_com_example_jni_Test_getListStudent(JNIEnv* env,jobject obj)
+{
+
+    jclass jArrayListClazz = (*env)->FindClass(env,"java/util/ArrayList");
+    // jmethodID   (*GetMethodID)(JNIEnv*, jclass, const char*, const char*);
+    jmethodID jconstruct = (*env)->GetMethodID(env,jArrayListClazz,"<init>","()V");
+    // jobject     (*NewObject)(JNIEnv*, jclass, jmethodID, ...);
+    jobject jArrayListObj = (*env)->NewObject(env,jArrayListClazz,jconstruct);
+
+    jmethodID jAdd = (*env)->GetMethodID(env,jArrayListClazz,"add","(Ljava/lang/Object;)Z");
+
+    for(int i = 0;i < 3;i++)
+    {
+        jobject person = createPerson(env,(*env)->NewStringUTF(env,"袁光芯"),25+i);
+        // jboolean    (*CallBooleanMethod)(JNIEnv*, jobject, jmethodID, ...);
+        (*env)->CallBooleanMethod(env,jArrayListObj,jAdd,person);
+    }
+
+    return jArrayListObj;
 }
